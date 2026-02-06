@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import UserForm from "../components/UserForm";
 import { createUser, updateUser, getUserById } from "../services/userApi";
 import type { User } from "../types/user";
-import { Typography, Container, Paper } from "@mui/material";
+import {
+  Typography,
+  Container,
+  Paper,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 
 export default function AddUserPage() {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +20,6 @@ export default function AddUserPage() {
 
   const isEditMode = Boolean(id);
 
-  // Fetch user when editing
   useEffect(() => {
     if (!id) return;
 
@@ -43,13 +48,21 @@ export default function AddUserPage() {
 
   return (
     <Container maxWidth="sm" className="my-10">
-      <Paper className="p-6 shadow-lg rounded-lg">
-        <Typography variant="h5" mb={2}>
+      <Paper className="p-6 sm:p-8 shadow-xl rounded-2xl">
+        <Typography
+          variant="h4"
+          fontWeight={600}
+          mb={3}
+          textAlign="center"
+          color="primary"
+        >
           {isEditMode ? "Edit User" : "Add New User"}
         </Typography>
 
-        {isEditMode && loading ? (
-          <Typography>Loading user data...</Typography>
+        {loading ? (
+          <Box className="flex justify-center py-20">
+            <CircularProgress size={50} />
+          </Box>
         ) : (
           <UserForm
             onSubmit={handleSubmit}

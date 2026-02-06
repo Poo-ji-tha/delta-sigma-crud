@@ -12,7 +12,10 @@ import {
   Typography,
   Container,
   Paper,
+  Box,
+  IconButton,
 } from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 
 export default function UserListPage() {
   const navigate = useNavigate();
@@ -32,63 +35,70 @@ export default function UserListPage() {
   };
 
   return (
-    <Container maxWidth="md" className="my-10">
-      <Paper className="p-6 shadow-lg rounded-lg">
-        <Typography variant="h5" mb={2}>
-          User List
-        </Typography>
-        <Button
-          variant="contained"
-          className="mb-4"
-          onClick={() => navigate("/users/add")}
-        >
-          Add New User
-        </Button>
+    <Container maxWidth="lg" className="my-10">
+      <Paper className="p-6 shadow-xl rounded-2xl">
+        <Box className="flex flex-col sm:flex-row sm:justify-between items-center mb-4">
+          <Typography variant="h4" fontWeight={600} mb={{ xs: 2, sm: 0 }}>
+            Users
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/users/add")}
+          >
+            Add New User
+          </Button>
+        </Box>
 
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.firstName}</TableCell>
-                <TableCell>{user.lastName}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phone}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    className="mr-2"
-                    onClick={() => navigate(`/users/edit/${user.id}`)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => handleDelete(user.id!)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
+        <Box className="overflow-x-auto">
+          <Table>
+            <TableHead>
+              <TableRow className="bg-gray-100">
+                <TableCell>First Name</TableCell>
+                <TableCell>Last Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-            {users.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <Typography>No users found</Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow
+                  key={user.id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  <TableCell>{user.firstName}</TableCell>
+                  <TableCell>{user.lastName}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.phone}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => navigate(`/users/edit/${user.id}`)}
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDelete(user.id!)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {users.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <Typography className="text-center py-4">
+                      No users found
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Box>
       </Paper>
     </Container>
   );
