@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import UserForm from "../components/UserForm";
-import { createUser, updateUser, getUsers } from "../services/userApi";
+import { createUser, updateUser, getUserById } from "../services/userApi";
 import type { User } from "../types/user";
 import { Typography, Container, Paper } from "@mui/material";
 
@@ -9,6 +9,8 @@ export default function AddUserPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [defaultValues, setDefaultValues] = useState<User | undefined>();
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const isEditMode = Boolean(id);
 
@@ -16,17 +18,16 @@ export default function AddUserPage() {
   useEffect(() => {
     if (!id) return;
 
-    getUsers()
-      .then((res) => {
-        console.log("Fetched users:", res.data);
-        const user = res.data.find((u) => u.id === id); // string match
-        if (user) setDefaultValues(user);
-      })
-      .catch((err) => console.error(err));
+    setLoading(true);
+    getUserById(id)
+      .then((res) => setDefaultValues(res.data))
+      .catch((err) => console.error("Fetch user failed", err))
+      .finally(() => setLoading(false));
   }, [id]);
 
   const handleSubmit = async (data: User) => {
     try {
+      setSubmitting(true);
       if (isEditMode) {
         await updateUser(id!, data);
       } else {
@@ -35,6 +36,8 @@ export default function AddUserPage() {
       navigate("/users");
     } catch (err) {
       console.error("Save failed", err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -45,11 +48,14 @@ export default function AddUserPage() {
           {isEditMode ? "Edit User" : "Add New User"}
         </Typography>
 
-        {/* Show loading while fetching */}
-        {isEditMode && !defaultValues ? (
+        {isEditMode && loading ? (
           <Typography>Loading user data...</Typography>
         ) : (
-          <UserForm onSubmit={handleSubmit} defaultValues={defaultValues} />
+          <UserForm
+            onSubmit={handleSubmit}
+            defaultValues={defaultValues}
+            submitting={submitting}
+          />
         )}
       </Paper>
     </Container>
