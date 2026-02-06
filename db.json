@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": "c21a",
+      "firstName": "Poojitha",
+      "lastName": "J",
+      "email": "jpoojitha33@gmail.com",
+      "phone": "09611655434"
+    },
+    {
+      "id": "59f5",
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@gmail.com",
+      "phone": "+1 5552-36848"
+    },
+    {
+      "firstName": "Mahesh",
+      "lastName": "Karthik",
+      "email": "mahesh.karthik@gmail.com",
+      "phone": "14258398748",
+      "id": "9ba5"
+    }
+  ]
+}
