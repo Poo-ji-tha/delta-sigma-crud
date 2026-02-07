@@ -22,11 +22,21 @@
  *  // errors will contain validation messages if input is invalid
  */
 
+// validation/userSchema.ts
+// validation/userSchema.ts
 import { z } from "zod";
 
-export const userSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+const phoneRegex = /^(?:\+91)?[6-9]\d{9}$/;
+
+const userSchema = z.object({
+  firstName: z.string().min(2, "First name is required"),
+  lastName: z.string().min(2, "Last name is required"),
   email: z.string().email("Invalid email"),
-  phone: z.string().min(5, "Invalid phone number"),
+  role: z.string().min(2, "Role is required"),
+  phone: z.string().regex(phoneRegex, {
+    message: "Enter 10-digit number or +91 followed by 10 digits",
+  }),
 });
+
+export type UserFormData = z.infer<typeof userSchema>;
+export default userSchema;

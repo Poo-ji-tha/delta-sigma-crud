@@ -1,159 +1,68 @@
-/**
- * UserTable Component
- *
- * Displays a table of users with their basic information (name, email, phone)
- * and provides actions to edit or delete each user.
- *
- * Features:
- *  - Fully compatible with MUI light/dark theme.
- *  - Highlights rows on hover for better UX.
- *  - Edit/Delete buttons with tooltips.
- *  - Delete confirmation dialog before deletion.
- *
- * Props:
- *  - users (User[]): Array of user objects to display in the table.
- *  - onDelete (function): Callback fired with the user's ID when a user is deleted.
- *  - onEdit (function): Callback fired with the user's ID when editing a user.
- *
- * Usage Example:
- *  <UserTable
- *    users={userList}
- *    onDelete={handleDeleteUser}
- *    onEdit={handleEditUser}
- *  />
- */
-
 import { useState } from "react";
 import type { User } from "../types/user";
 import DeleteConfirmDialog from "./DeleteDialog";
+
 import {
-  IconButton,
-  Tooltip,
   Table,
-  TableHead,
   TableBody,
-  TableRow,
   TableCell,
-  Paper,
   TableContainer,
-  useTheme,
+  TableHead,
+  TableRow,
+  IconButton,
+  Paper,
 } from "@mui/material";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-interface Props {
+type Props = {
   users: User[];
-  onDelete: (id: string) => void;
   onEdit: (id: string) => void;
-}
+  onDelete: (id: string) => Promise<void> | void;
+};
 
-export default function UserTable({ users, onDelete, onEdit }: Props) {
+export default function UserTable({ users, onEdit, onDelete }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const theme = useTheme(); // Access MUI theme for dark/light mode
 
   return (
     <>
       <TableContainer component={Paper}>
         <Table>
-          <TableHead
-            sx={{
-              backgroundColor:
-                theme.palette.mode === "dark"
-                  ? theme.palette.grey[900]
-                  : theme.palette.grey[100],
-            }}
-          >
+          <TableHead>
             <TableRow>
-              <TableCell
-                sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? theme.palette.grey[100]
-                      : theme.palette.grey[900],
-                  fontWeight: 600,
-                }}
-              >
-                Name
-              </TableCell>
-              <TableCell
-                sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? theme.palette.grey[100]
-                      : theme.palette.grey[900],
-                  fontWeight: 600,
-                }}
-              >
-                Email
-              </TableCell>
-              <TableCell
-                sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? theme.palette.grey[100]
-                      : theme.palette.grey[900],
-                  fontWeight: 600,
-                }}
-              >
-                Phone
-              </TableCell>
-              <TableCell
-                sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? theme.palette.grey[100]
-                      : theme.palette.grey[900],
-                  fontWeight: 600,
-                  textAlign: "center",
-                }}
-              >
-                Actions
-              </TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {users.map((user) => (
-              <TableRow
-                key={user.id}
-                hover
-                sx={{
-                  "&:hover": {
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? theme.palette.grey[800]
-                        : theme.palette.grey[50],
-                  },
-                }}
-              >
+              <TableRow key={user.id} hover>
                 <TableCell>
                   {user.firstName} {user.lastName}
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phone}</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  <Tooltip title="Edit">
-                    <IconButton
-                      color="primary"
-                      onClick={() => onEdit(user.id!)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton
-                      color="error"
-                      onClick={() => setSelectedId(user.id!)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
+
+                <TableCell align="right">
+                  <IconButton color="primary" onClick={() => onEdit(user.id!)}>
+                    <EditIcon />
+                  </IconButton>
+
+                  <IconButton
+                    color="error"
+                    onClick={() => setSelectedId(user.id!)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
+
             {users.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} sx={{ textAlign: "center", py: 3 }}>
+                <TableCell colSpan={3} align="center">
                   No users found
                 </TableCell>
               </TableRow>
@@ -162,11 +71,13 @@ export default function UserTable({ users, onDelete, onEdit }: Props) {
         </Table>
       </TableContainer>
 
+      {/* ✅ DELETE CONFIRMATION DIALOG */}
       <DeleteConfirmDialog
         open={!!selectedId}
         onClose={() => setSelectedId(null)}
-        onConfirm={() => {
-          if (selectedId) onDelete(selectedId);
+        onConfirm={async () => {
+          if (!selectedId) return;
+          await onDelete(selectedId);
           setSelectedId(null);
         }}
       />
