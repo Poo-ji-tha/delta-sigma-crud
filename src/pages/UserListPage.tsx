@@ -1,3 +1,26 @@
+/**
+ * UserListPage Component
+ *
+ * Displays a list of users in a table with options to add, edit, or delete users.
+ *
+ * Features:
+ *  - Fetches users from the API on component mount using `getUsers`.
+ *  - Shows a "No users found" message if the list is empty.
+ *  - Add button navigates to the Add User page.
+ *  - Edit button navigates to the Edit User page for the selected user.
+ *  - Delete button prompts confirmation and deletes the user using `deleteUser`.
+ *  - Uses Material UI Table components for layout and styling.
+ *  - Tailwind CSS handles spacing, hover effects, and responsive design.
+ *
+ * Hooks Used:
+ *  - `useState` for managing the list of users.
+ *  - `useEffect` to fetch the user data on mount.
+ *  - `useNavigate` for programmatic navigation.
+ *
+ * Usage Example:
+ *  <UserListPage />
+ */
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUsers, deleteUser } from "../services/userApi";
@@ -14,12 +37,15 @@ import {
   Paper,
   Box,
   IconButton,
+  useTheme,
+  TableContainer,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
 export default function UserListPage() {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
+  const theme = useTheme();
 
   const fetchUsers = () => {
     getUsers().then((res) => setUsers(res.data));
@@ -37,7 +63,7 @@ export default function UserListPage() {
   return (
     <Container maxWidth="lg" className="my-10">
       <Paper className="p-6 shadow-xl rounded-2xl">
-        <Box className="flex flex-col sm:flex-row sm:justify-between items-center mb-4">
+        <Box className="flex flex-col items-center mb-4 sm:flex-row sm:justify-between">
           <Typography variant="h4" fontWeight={600} mb={{ xs: 2, sm: 0 }}>
             Users
           </Typography>
@@ -50,22 +76,49 @@ export default function UserListPage() {
           </Button>
         </Box>
 
-        <Box className="overflow-x-auto">
+        <TableContainer>
           <Table>
-            <TableHead>
-              <TableRow className="bg-gray-100">
-                <TableCell>First Name</TableCell>
-                <TableCell>Last Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Actions</TableCell>
+            <TableHead
+              sx={{
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.grey[900]
+                    : theme.palette.grey[100],
+              }}
+            >
+              <TableRow>
+                {["First Name", "Last Name", "Email", "Phone", "Actions"].map(
+                  (header) => (
+                    <TableCell
+                      key={header}
+                      sx={{
+                        color:
+                          theme.palette.mode === "dark"
+                            ? theme.palette.grey[100]
+                            : theme.palette.grey[900],
+                        fontWeight: 600,
+                      }}
+                    >
+                      {header}
+                    </TableCell>
+                  ),
+                )}
               </TableRow>
             </TableHead>
+
             <TableBody>
               {users.map((user) => (
                 <TableRow
                   key={user.id}
-                  className="hover:bg-gray-50 transition-colors"
+                  hover
+                  sx={{
+                    "&:hover": {
+                      backgroundColor:
+                        theme.palette.mode === "dark"
+                          ? theme.palette.grey[800]
+                          : theme.palette.grey[50],
+                    },
+                  }}
                 >
                   <TableCell>{user.firstName}</TableCell>
                   <TableCell>{user.lastName}</TableCell>
@@ -87,18 +140,17 @@ export default function UserListPage() {
                   </TableCell>
                 </TableRow>
               ))}
+
               {users.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5}>
-                    <Typography className="text-center py-4">
-                      No users found
-                    </Typography>
+                  <TableCell colSpan={5} sx={{ textAlign: "center", py: 3 }}>
+                    <Typography>No users found</Typography>
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-        </Box>
+        </TableContainer>
       </Paper>
     </Container>
   );

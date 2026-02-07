@@ -1,3 +1,22 @@
+/**
+ * App Component
+ *
+ * The root component of the application.
+ * Sets up global theming, routing, and the main layout (Header + Footer + page content).
+ *
+ * Features:
+ *  - ThemeProvider with dynamic light/dark mode using MUI theme.
+ *  - CssBaseline to normalize default browser styles.
+ *  - Header and Footer components for consistent layout.
+ *  - React Router DOM for page routing:
+ *      - /users → UserListPage
+ *      - /users/add → AddUserPage (for creating users)
+ *      - /users/edit/:id → AddUserPage (for editing users)
+ *      - * → fallback to UserListPage
+ *  - Container with min-height to ensure footer stays at bottom for short pages.
+ *
+ */
+
 import { useState, useMemo } from "react";
 import { ThemeProvider, CssBaseline, Container } from "@mui/material";
 import { getTheme } from "./theme/theme";

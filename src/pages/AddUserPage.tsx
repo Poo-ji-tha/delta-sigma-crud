@@ -1,3 +1,29 @@
+/**
+ * AddUserPage Component
+ *
+ * Page for adding a new user or editing an existing user.
+ * Determines mode (add/edit) based on the presence of `id` in URL params.
+ *
+ * Features:
+ *  - Fetches user data when editing an existing user using `getUserById`.
+ *  - Displays a loading spinner while fetching user data.
+ *  - Uses `UserForm` component for form UI and validation.
+ *  - Handles form submission:
+ *      - Calls `createUser` for new users.
+ *      - Calls `updateUser` for existing users.
+ *  - Navigates back to "/users" after successful submission.
+ *  - Handles submission state to disable form and show feedback.
+ *
+ * Hooks Used:
+ *  - `useParams` to read URL parameters.
+ *  - `useNavigate` for programmatic navigation.
+ *  - `useState` for local component state (loading, submitting, defaultValues).
+ *  - `useEffect` to fetch user data when in edit mode.
+ *
+ * Usage:
+ *  <AddUserPage />
+ */
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import UserForm from "../components/UserForm";
@@ -48,7 +74,7 @@ export default function AddUserPage() {
 
   return (
     <Container maxWidth="sm" className="my-10">
-      <Paper className="p-6 sm:p-8 shadow-xl rounded-2xl">
+      <Paper className="p-6 shadow-xl sm:p-8 rounded-2xl">
         <Typography
           variant="h4"
           fontWeight={600}

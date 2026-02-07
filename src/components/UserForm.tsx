@@ -1,3 +1,28 @@
+/**
+ * UserForm Component
+ *
+ * A reusable form for creating or editing a user.
+ * Handles form state, validation, and submission using react-hook-form
+ * and Zod schema validation.
+ *
+ * Props:
+ *  - onSubmit (function): Callback fired with validated form data when the form is submitted.
+ *  - defaultValues (User, optional): Pre-filled values for editing an existing user.
+ *  - submitting (boolean, optional): Indicates whether the form submission is in progress (disables submit button).
+ *
+ * Features:
+ *  - Uses react-hook-form for efficient form state management.
+ *  - Validates fields with Zod, displaying inline errors.
+ *  - Material UI TextField components for consistent UI styling.
+ *  - Submit button dynamically changes text to "Saving..." while submitting.
+ *
+ * Usage Example:
+ *  <UserForm
+ *    onSubmit={handleUserSave}
+ *    defaultValues={existingUser}
+ *    submitting={isSubmitting}
+ *  />
+ */
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";

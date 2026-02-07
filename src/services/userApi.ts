@@ -1,3 +1,26 @@
+/**
+ * userApi Service
+ *
+ * Provides functions to interact with the User API for CRUD operations.
+ * Uses Axios for HTTP requests.
+ *
+ * Functions:
+ *  - getUsers(): Fetch all users.
+ *  - getUserById(id: string): Fetch a single user by ID.
+ *  - createUser(data: User): Create a new user.
+ *  - updateUser(id: string, data: User): Update an existing user.
+ *  - deleteUser(id: string): Delete a user by ID.
+ *
+ * Notes:
+ *  - API_URL should point to your backend or mock API endpoint.
+ *  - Each function returns a Promise that resolves with Axios response data.
+ *
+ * Usage Example:
+ *  import { getUsers, createUser } from "../services/userApi";
+ *
+ *  getUsers().then(res => console.log(res.data));
+ */
+
 import axios from "axios";
 import type { User } from "../types/user";
 
